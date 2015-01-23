@@ -1,5 +1,5 @@
-#ifndef TEST_H
-#define	TEST_H
+#ifndef TEST_ROBOT_MODULE_H
+#define	TEST_ROBOT_MODULE_H
 
 class TestRobot : public Robot {
     public: 
@@ -46,4 +46,4 @@ extern "C" {
 	robot_axis[axis_id].name = AXIS_NAME; \
 	axis_id++;
 
-#endif	/* TEST_H */
+#endif	/* TEST_ROBOT_MODULE_H */

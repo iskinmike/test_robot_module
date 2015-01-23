@@ -5,7 +5,7 @@
 #include "../module_headers/module.h"
 #include "../module_headers/robot_module.h"
 
-#include "test_module.h"
+#include "test_robot_module.h"
 
 /* GLOBALS CONFIG */
 const int COUNT_ROBOTS = 99;
@@ -56,7 +56,7 @@ void TestRobot::axisControl(regval axis_index, regval value) {
 		case 3: { name = "Z"; break; }
 		default: { name = "O_o"; break; };
 	}
-	//printf("%s = %d\n", name, value);
+	printf("%s = %d\n", name, value);
 }
 
 TestRobotModule::TestRobotModule() {
