@@ -28,10 +28,6 @@ class TestRobotModule : public RobotModule {
 		~TestRobotModule() {};
 };
 
-extern "C" {
-	__declspec(dllexport) RobotModule* getRobotModuleObject();
-}
-
 #define ADD_ROBOT_FUNCTION(FUNCTION_NAME, COUNT_PARAMS, GIVE_EXCEPTION) \
 	robot_functions[function_id].command_index = function_id + 1; \
 	robot_functions[function_id].count_params = COUNT_PARAMS; \
