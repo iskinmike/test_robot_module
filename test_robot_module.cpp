@@ -61,12 +61,12 @@ void TestRobot::axisControl(regval axis_index, regval value) {
 
 TestRobotModule::TestRobotModule() {
 	{
-		robot_functions = new FunctionData[COUNT_FUNCTIONS];
+		robot_functions = new FunctionData*[COUNT_FUNCTIONS];
 		regval function_id = 0;
 		DEFINE_ALL_FUNCTIONS
 	}
 	{
-		robot_axis = new AxisData[COUNT_AXIS];
+		robot_axis = new AxisData*[COUNT_AXIS];
 		regval axis_id = 0;
 		DEFINE_ALL_AXIS
 	}
@@ -80,12 +80,12 @@ int TestRobotModule::init() {
 	return 0;
 }
 
-FunctionData* TestRobotModule::getFunctions(int *count_functions) {
+FunctionData** TestRobotModule::getFunctions(int *count_functions) {
 	(*count_functions) = COUNT_FUNCTIONS;
 	return robot_functions;
 }
 
-AxisData* TestRobotModule::getAxis(int *count_axis) {
+AxisData** TestRobotModule::getAxis(int *count_axis) {
 	(*count_axis) = COUNT_AXIS;
 	return robot_axis;
 }
@@ -97,11 +97,10 @@ Robot* TestRobotModule::robotRequire() {
 		if (i->second->isAviable) {
 			printf("DLL: finded free robot: %p\n",i->second);
 			
-			TestRobot *test_robot = i->second;
-			test_robot->isAviable = false;
+			TestRobot *tr = i->second;
+			tr->isAviable = false;
 
-			Robot *robot = test_robot;
-			return robot;
+			return tr;
 		}
 	}
 	return NULL;
@@ -127,13 +126,17 @@ void TestRobotModule::final() {
 }
 
 void TestRobotModule::destroy() {
+	for (int j = 0; j < COUNT_FUNCTIONS; ++j) {
+		delete robot_functions[j];
+	}
+	for (int j = 0; j < COUNT_AXIS; ++j) {
+		delete robot_axis[j];
+	}
 	delete[] robot_functions;
 	delete[] robot_axis;
 	delete this;
 }
 
 __declspec(dllexport) RobotModule* getRobotModuleObject() {
-	TestRobotModule *lrm = new TestRobotModule();
-	RobotModule *rm = lrm;
-	return rm;
+	return new TestRobotModule();
 }
