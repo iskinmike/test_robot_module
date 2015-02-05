@@ -72,6 +72,10 @@ TestRobotModule::TestRobotModule() {
 	}
 }
 
+int TestRobotModule::getVersion() {
+	return 0x0095B; //0.95b
+}
+
 int TestRobotModule::init() {
 	for (int i = 0; i < COUNT_ROBOTS; ++i) {
 		TestRobot *test_robot = new TestRobot();
