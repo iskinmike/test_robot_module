@@ -18,6 +18,7 @@ class TestRobotModule : public RobotModule {
 
 	public:
 		TestRobotModule();
+		const char *getUID();
 		int init();
 		FunctionData** getFunctions(int *count_functions);
 		AxisData** getAxis(int *count_axis);
@@ -34,7 +35,7 @@ class TestRobotModule : public RobotModule {
 	robot_functions[function_id]->count_params = COUNT_PARAMS; \
 	robot_functions[function_id]->give_exception = GIVE_EXCEPTION; \
 	robot_functions[function_id]->name = FUNCTION_NAME; \
-	function_id++;
+	++function_id;
 
 #define ADD_ROBOT_AXIS(AXIS_NAME, UPPER_VALUE, LOWER_VALUE) \
 	robot_axis[axis_id] = new AxisData; \
@@ -42,6 +43,6 @@ class TestRobotModule : public RobotModule {
 	robot_axis[axis_id]->upper_value = UPPER_VALUE; \
 	robot_axis[axis_id]->lower_value = LOWER_VALUE; \
 	robot_axis[axis_id]->name = AXIS_NAME; \
-	axis_id++;
+	++axis_id;
 
 #endif	/* TEST_ROBOT_MODULE_H */

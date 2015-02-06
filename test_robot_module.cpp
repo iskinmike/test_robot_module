@@ -72,6 +72,10 @@ TestRobotModule::TestRobotModule() {
 	}
 }
 
+const char *TestRobotModule::getUID() {
+	return "Test robot module v1.00";
+}
+
 int TestRobotModule::init() {
 	for (int i = 0; i < COUNT_ROBOTS; ++i) {
 		TestRobot *test_robot = new TestRobot();
