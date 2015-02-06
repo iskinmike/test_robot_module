@@ -18,7 +18,7 @@ class TestRobotModule : public RobotModule {
 
 	public:
 		TestRobotModule();
-		int getVersion();
+		const char *getUID();
 		int init();
 		FunctionData** getFunctions(int *count_functions);
 		AxisData** getAxis(int *count_axis);

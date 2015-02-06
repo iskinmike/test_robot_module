@@ -72,8 +72,8 @@ TestRobotModule::TestRobotModule() {
 	}
 }
 
-int TestRobotModule::getVersion() {
-	return 0x0095B; //0.95b
+const char *TestRobotModule::getUID() {
+	return "Test robot module v1.00";
 }
 
 int TestRobotModule::init() {
