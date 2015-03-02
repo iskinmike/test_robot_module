@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <map>
+#include <functional>
+
 #include <windows.h>
 
 #include "../module_headers/module.h"
@@ -76,6 +78,19 @@ const char *TestRobotModule::getUID() {
 	return "Test robot module v1.00";
 }
 
+void TestRobotModule::colorPrintf(ConsoleColor colors, const char *mask, ...) {
+	va_list args;
+    va_start(args, mask);
+    (*colorPrintf_p)(this, colors, mask, args);
+    va_end(args);
+}
+
+void TestRobotModule::prepare(colorPrintf_t *colorPrintf_p, colorPrintfVA_t *colorPrintfVA_p) {
+	this->colorPrintf_p = colorPrintfVA_p;
+
+	colorPrintf(ConsoleColor(ConsoleColor::green), "test = %d\n", 120);
+}
+
 int TestRobotModule::init() {
 	for (int i = 0; i < COUNT_ROBOTS; ++i) {
 		TestRobot *test_robot = new TestRobot();
@@ -95,7 +110,7 @@ AxisData** TestRobotModule::getAxis(int *count_axis) {
 }
 
 Robot* TestRobotModule::robotRequire() {
-	printf("DLL: new robot require\n");
+	printf(0, "DLL: new robot require\n");
 
 	for(m_connections::iterator i = aviable_connections.begin(); i != aviable_connections.end(); ++i) {
 		if (i->second->isAviable) {

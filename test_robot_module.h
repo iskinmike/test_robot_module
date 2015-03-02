@@ -15,10 +15,15 @@ class TestRobotModule : public RobotModule {
 	m_connections aviable_connections;
 	FunctionData **robot_functions;
 	AxisData **robot_axis;
+	colorPrintfVA_t *colorPrintf_p;
+
+	private:
+		void colorPrintf(ConsoleColor colors, const char *mask, ...);
 
 	public:
 		TestRobotModule();
 		const char *getUID();
+		void prepare(colorPrintf_t *colorPrintf_p, colorPrintfVA_t *colorPrintfVA_p);
 		int init();
 		FunctionData** getFunctions(int *count_functions);
 		AxisData** getAxis(int *count_axis);
