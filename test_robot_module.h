@@ -1,10 +1,14 @@
 #ifndef TEST_ROBOT_MODULE_H
 #define	TEST_ROBOT_MODULE_H
 
+class TestRobotModule;
+
 class TestRobot : public Robot {
+	TestRobotModule *parent;
+
     public: 
 		bool isAviable;
-		TestRobot() : isAviable(true) {}
+		TestRobot(TestRobotModule *parent) : isAviable(true), parent(parent) {}
 		FunctionResult* executeFunction(regval command_index, regval *args);
 		void axisControl(regval axis_index, regval value);
         ~TestRobot() {}
@@ -16,9 +20,6 @@ class TestRobotModule : public RobotModule {
 	FunctionData **robot_functions;
 	AxisData **robot_axis;
 	colorPrintfVA_t *colorPrintf_p;
-
-	private:
-		void colorPrintf(ConsoleColor colors, const char *mask, ...);
 
 	public:
 		TestRobotModule();
@@ -32,6 +33,8 @@ class TestRobotModule : public RobotModule {
 		void final();
 		void destroy();
 		~TestRobotModule() {};
+
+		void colorPrintf(ConsoleColor colors, const char *mask, ...);
 };
 
 #define ADD_ROBOT_FUNCTION(FUNCTION_NAME, COUNT_PARAMS, GIVE_EXCEPTION) \
