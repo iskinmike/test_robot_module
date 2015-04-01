@@ -9,8 +9,8 @@ class TestRobot : public Robot {
     public: 
 		bool isAviable;
 		TestRobot(TestRobotModule *parent) : isAviable(true), parent(parent) {}
-		FunctionResult* executeFunction(regval command_index, regval *args);
-		void axisControl(regval axis_index, regval value);
+		FunctionResult* executeFunction(system_value command_index, variable_value *args);
+		void axisControl(system_value axis_index, variable_value value);
         ~TestRobot() {}
 };
 typedef std::map<int, TestRobot*> m_connections;
@@ -26,8 +26,8 @@ class TestRobotModule : public RobotModule {
 		const char *getUID();
 		void prepare(colorPrintf_t *colorPrintf_p, colorPrintfVA_t *colorPrintfVA_p);
 		int init();
-		FunctionData** getFunctions(int *count_functions);
-		AxisData** getAxis(int *count_axis);
+		FunctionData** getFunctions(unsigned int *count_functions);
+		AxisData** getAxis(unsigned int *count_axis);
 		Robot* robotRequire();
 		void robotFree(Robot *robot);
 		void final();
