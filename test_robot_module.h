@@ -1,12 +1,16 @@
 #ifndef TEST_ROBOT_MODULE_H
 #define	TEST_ROBOT_MODULE_H
 
+class TestRobotModule;
+
 class TestRobot : public Robot {
+	TestRobotModule *parent;
+
     public: 
 		bool isAviable;
-		TestRobot() : isAviable(true) {}
-		FunctionResult* executeFunction(regval command_index, regval *args);
-		void axisControl(regval axis_index, regval value);
+		TestRobot(TestRobotModule *parent) : isAviable(true), parent(parent) {}
+		FunctionResult* executeFunction(system_value command_index, variable_value *args);
+		void axisControl(system_value axis_index, variable_value value);
         ~TestRobot() {}
 };
 typedef std::map<int, TestRobot*> m_connections;
@@ -15,18 +19,22 @@ class TestRobotModule : public RobotModule {
 	m_connections aviable_connections;
 	FunctionData **robot_functions;
 	AxisData **robot_axis;
+	colorPrintfVA_t *colorPrintf_p;
 
 	public:
 		TestRobotModule();
 		const char *getUID();
+		void prepare(colorPrintf_t *colorPrintf_p, colorPrintfVA_t *colorPrintfVA_p);
 		int init();
-		FunctionData** getFunctions(int *count_functions);
-		AxisData** getAxis(int *count_axis);
+		FunctionData** getFunctions(unsigned int *count_functions);
+		AxisData** getAxis(unsigned int *count_axis);
 		Robot* robotRequire();
 		void robotFree(Robot *robot);
 		void final();
 		void destroy();
 		~TestRobotModule() {};
+
+		void colorPrintf(ConsoleColor colors, const char *mask, ...);
 };
 
 #define ADD_ROBOT_FUNCTION(FUNCTION_NAME, COUNT_PARAMS, GIVE_EXCEPTION) \
