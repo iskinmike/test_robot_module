@@ -9,7 +9,7 @@ class TestRobot : public Robot {
     public: 
 		bool isAviable;
 		TestRobot(TestRobotModule *parent) : isAviable(true), parent(parent) {}
-		FunctionResult* executeFunction(system_value command_index, variable_value *args);
+		FunctionResult* executeFunction(system_value command_index, void **args);
 		void axisControl(system_value axis_index, variable_value value);
         ~TestRobot() {}
 };
@@ -36,14 +36,6 @@ class TestRobotModule : public RobotModule {
 
 		void colorPrintf(ConsoleColor colors, const char *mask, ...);
 };
-
-#define ADD_ROBOT_FUNCTION(FUNCTION_NAME, COUNT_PARAMS, GIVE_EXCEPTION) \
-	robot_functions[function_id] = new FunctionData; \
-	robot_functions[function_id]->command_index = function_id + 1; \
-	robot_functions[function_id]->count_params = COUNT_PARAMS; \
-	robot_functions[function_id]->give_exception = GIVE_EXCEPTION; \
-	robot_functions[function_id]->name = FUNCTION_NAME; \
-	++function_id;
 
 #define ADD_ROBOT_AXIS(AXIS_NAME, UPPER_VALUE, LOWER_VALUE) \
 	robot_axis[axis_id] = new AxisData; \

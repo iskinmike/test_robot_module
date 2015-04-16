@@ -11,43 +11,46 @@
 
 /* GLOBALS CONFIG */
 const unsigned int COUNT_ROBOTS = 99;
-const unsigned int COUNT_FUNCTIONS = 4;
+const unsigned int COUNT_FUNCTIONS = 5;
 const unsigned int COUNT_AXIS = 3;
-
-#define DEFINE_ALL_FUNCTIONS \
-	ADD_ROBOT_FUNCTION("none", 0, false)\
-	ADD_ROBOT_FUNCTION("do_something", 1, false)\
-	ADD_ROBOT_FUNCTION("get_some_value", 1, false)\
-	ADD_ROBOT_FUNCTION("throw_exception", 0, true)
 
 #define DEFINE_ALL_AXIS \
 	ADD_ROBOT_AXIS("X", 100, -100)\
 	ADD_ROBOT_AXIS("Y", 1, 0)\
 	ADD_ROBOT_AXIS("Z", 100, 0)
 
-FunctionResult* TestRobot::executeFunction(system_value command_index, variable_value *args) {
+FunctionResult* TestRobot::executeFunction(system_value command_index, void **args) {
+	FunctionResult *fr = NULL;
+
 	switch (command_index) {
 		case 1: {
 			break;
 		}
 		case 2: {
-			Sleep(args[0]);
+			variable_value *vv = (variable_value*) args[0];
+			Sleep((DWORD) *vv);
 			break;
 		}
 		case 3: {
-			if (args[0]) {
-				Sleep(args[0]);
+			variable_value *vv = (variable_value*) args[0];
+			if (*vv) {
+				Sleep((DWORD) *vv);
 			}
-			FunctionResult *fr = new FunctionResult(1, rand());
-			return fr;
+			fr = new FunctionResult(1, rand());
+			break;
 		}
 		case 4: {
-			FunctionResult *fr = new FunctionResult(0);
-			return fr;
+			fr = new FunctionResult(0);
+			break;
+		}
+		case 5: {
+			puts((const char *) args[0]);
+			break;
 		}
 		default: break;
 	}
-	return NULL;
+
+	return fr;
 }
 
 void TestRobot::axisControl(system_value axis_index, variable_value value) {
@@ -65,7 +68,28 @@ TestRobotModule::TestRobotModule() {
 	{
 		robot_functions = new FunctionData*[COUNT_FUNCTIONS];
 		system_value function_id = 0;
-		DEFINE_ALL_FUNCTIONS
+		FunctionData::ParamTypes *pt;
+
+		robot_functions[function_id] = new FunctionData(function_id + 1, 0, NULL, "none");
+		function_id++;
+		
+		pt = new FunctionData::ParamTypes[1];
+		pt[0] = FunctionData::ParamTypes::FLOAT;
+		robot_functions[function_id] = new FunctionData(function_id + 1, 1, pt, "do_something");
+		function_id++;
+
+		pt = new FunctionData::ParamTypes[1];
+		pt[0] = FunctionData::ParamTypes::FLOAT;
+		robot_functions[function_id] = new FunctionData(function_id + 1, 1, pt, "get_some_value");
+		function_id++;
+
+		robot_functions[function_id] = new FunctionData(function_id + 1, 0, NULL, "throw_exception");
+		function_id++;
+		
+		pt = new FunctionData::ParamTypes[1];
+		pt[0] = FunctionData::ParamTypes::STRING;
+		robot_functions[function_id] = new FunctionData(function_id + 1, 1, pt, "print");
+		function_id++;
 	}
 	{
 		robot_axis = new AxisData*[COUNT_AXIS];
@@ -144,6 +168,9 @@ void TestRobotModule::final() {
 
 void TestRobotModule::destroy() {
 	for (unsigned int j = 0; j < COUNT_FUNCTIONS; ++j) {
+		if (robot_functions[j]->count_params) {
+			delete[] robot_functions[j]->params;
+		}
 		delete robot_functions[j];
 	}
 	for (unsigned int j = 0; j < COUNT_AXIS; ++j) {
