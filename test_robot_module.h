@@ -25,12 +25,19 @@ class TestRobotModule : public RobotModule {
 		TestRobotModule();
 		const char *getUID();
 		void prepare(colorPrintf_t *colorPrintf_p, colorPrintfVA_t *colorPrintfVA_p);
-		int init();
+
 		FunctionData** getFunctions(unsigned int *count_functions);
 		AxisData** getAxis(unsigned int *count_axis);
+		void *writePC(unsigned int *buffer_length);
+
+		int init();
 		Robot* robotRequire();
 		void robotFree(Robot *robot);
 		void final();
+
+		int startProgram(int uniq_index, void *buffer, unsigned int buffer_length);
+		int endProgram(int uniq_index);
+		
 		void destroy();
 		~TestRobotModule() {};
 
