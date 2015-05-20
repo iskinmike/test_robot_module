@@ -2,10 +2,17 @@
 #include <map>
 #include <functional>
 
-#include <windows.h>
+//#include <windows.h>
+#include <stdlib.h>
+#include <stdint.h>
+//#include <time.h>
+#include <unistd.h>
+#include <cstdarg>
+#include <cstddef>
 
-#include "../module_headers/module.h"
-#include "../module_headers/robot_module.h"
+
+#include "../../module_headers/module.h"
+#include "../../module_headers/robot_module.h"
 
 #include "test_robot_module.h"
 
@@ -13,6 +20,8 @@
 const unsigned int COUNT_ROBOTS = 99;
 const unsigned int COUNT_FUNCTIONS = 5;
 const unsigned int COUNT_AXIS = 3;
+
+#define DWORD uint32_t
 
 #define DEFINE_ALL_AXIS \
 	ADD_ROBOT_AXIS("X", 100, -100)\
@@ -158,13 +167,13 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 		}
 		case 2: {
 			variable_value *vv = (variable_value*) args[0];
-			Sleep((DWORD) *vv);
+			usleep((DWORD) *vv);
 			break;
 		}
 		case 3: {
 			variable_value *vv = (variable_value*) args[0];
 			if (*vv) {
-				Sleep((DWORD) *vv);
+				usleep((DWORD) *vv);
 			}
 			fr = new FunctionResult(1, rand());
 			break;
@@ -194,6 +203,6 @@ void TestRobot::axisControl(system_value axis_index, variable_value value) {
 	parent->colorPrintf(ConsoleColor(ConsoleColor::green), "change axis value: %s = %d\n", name, value);
 }
 
-__declspec(dllexport) RobotModule* getRobotModuleObject() {
+PREFIX_FUNC_DLL RobotModule* getRobotModuleObject() {
 	return new TestRobotModule();
 }
