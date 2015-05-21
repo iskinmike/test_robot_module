@@ -33,7 +33,7 @@ test_robot_module.o:  test_robot_module.cpp
 	@echo "-------------------------" 
 	mkdir -p ${OBJECTDIR}
 	rm -f "${OBJECTDIR}/$@.d"
-	$(COMPILE.cc) -c $(FLAGS) -o ${OBJECTDIR}/test_robot_module.o test_robot_module.cpp
+	$(COMPILE.cc) $(FLAGS) -o ${OBJECTDIR}/test_robot_module.o test_robot_module.cpp
 
 
 module: test_robot_module.o
