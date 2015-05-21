@@ -13,8 +13,8 @@
 	#include <cstddef>
 #endif	
 
-#include "../../module_headers/module.h"
-#include "../../module_headers/robot_module.h"
+#include "module_headers/module.h"
+#include "module_headers/robot_module.h"
 
 #include "test_robot_module.h"
 

@@ -4,7 +4,12 @@ CCC=g++
 CXX=g++
 
 # Constants
-FLAGS_MUTUAL = -Wall -m32 -std=c++11 -MMD -MP -MF "${OBJECTDIR}/$@.d"
+MODULE_HEADERS_DIR = "C:\Program Files (x86)\Jenkins\workspace\module_headers"
+
+INCLUDE_DIR_FLAGS = -I${MODULE_HEADERS_DIR}
+
+FLAGS_MUTUAL = -Wall -m32 -std=c++11 ${INCLUDE_DIR_FLAGS} -MMD -MP -MF "${OBJECTDIR}/$@.d"
+
 
 .PHONY: debug
 
