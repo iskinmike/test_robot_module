@@ -24,11 +24,6 @@ const unsigned int COUNT_ROBOTS = 99;
 const unsigned int COUNT_FUNCTIONS = 5;
 const unsigned int COUNT_AXIS = 3;
 
-#ifdef _WIN32
-#else
-	#define DWORD uint32_t
-#endif	
-
 #define DEFINE_ALL_AXIS \
 	ADD_ROBOT_AXIS("X", 100, -100)\
 	ADD_ROBOT_AXIS("Y", 1, 0)\
@@ -177,7 +172,7 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 #ifdef _WIN32
 			Sleep((DWORD) *vv);
 #else
-			usleep(((DWORD) *vv)*1000);
+			usleep(((uint32_t) *vv)*1000);
 #endif			
 			break;
 		}
