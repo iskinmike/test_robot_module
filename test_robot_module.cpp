@@ -2,14 +2,17 @@
 #include <map>
 #include <functional>
 
-//#include <windows.h>
-#include <stdlib.h>
-#include <stdint.h>
-//#include <time.h>
-#include <unistd.h>
-#include <cstdarg>
-#include <cstddef>
 
+#ifdef _WIN32
+	#include <windows.h>
+#else
+	#include <stdlib.h>
+	#include <stdint.h>
+	#include <time.h>
+	#include <unistd.h>
+	#include <cstdarg>
+	#include <cstddef>
+#endif	
 
 #include "../../module_headers/module.h"
 #include "../../module_headers/robot_module.h"
@@ -21,7 +24,10 @@ const unsigned int COUNT_ROBOTS = 99;
 const unsigned int COUNT_FUNCTIONS = 5;
 const unsigned int COUNT_AXIS = 3;
 
-#define DWORD uint32_t
+#ifdef _WIN32
+#else
+	#define DWORD uint32_t
+#endif	
 
 #define DEFINE_ALL_AXIS \
 	ADD_ROBOT_AXIS("X", 100, -100)\
@@ -90,6 +96,7 @@ int TestRobotModule::init() {
 		TestRobot *test_robot = new TestRobot(this);
 		aviable_connections[i] = test_robot;
 	}
+	srand(time(NULL));
 	return 0;
 }
 
@@ -162,27 +169,28 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 	FunctionResult *fr = NULL;
 
 	switch (command_index) {
-		case 1: {
+		case 1: { // none
 			break;
 		}
-		case 2: {
+		case 2: { // do_something
 			variable_value *vv = (variable_value*) args[0];
-			usleep((DWORD) *vv);
+#ifdef _WIN32
+			Sleep((DWORD) *vv);
+#else
+			usleep(((DWORD) *vv)*1000);
+#endif			
 			break;
 		}
-		case 3: {
+		case 3: { // get_some_value
 			variable_value *vv = (variable_value*) args[0];
-			if (*vv) {
-				usleep((DWORD) *vv);
-			}
-			fr = new FunctionResult(1, rand());
+			fr = new FunctionResult(1, rand()%((int) *vv) );
 			break;
 		}
-		case 4: {
+		case 4: { // throw_exception
 			fr = new FunctionResult(0);
 			break;
 		}
-		case 5: {
+		case 5: { // print
 			puts((const char *) args[0]);
 			break;
 		}
