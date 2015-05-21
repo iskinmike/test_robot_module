@@ -1,14 +1,13 @@
 #include <stdio.h>
 #include <map>
 #include <functional>
-
+#include <time.h>
 
 #ifdef _WIN32
 	#include <windows.h>
 #else
 	#include <stdlib.h>
 	#include <stdint.h>
-	#include <time.h>
 	#include <unistd.h>
 	#include <cstdarg>
 	#include <cstddef>
