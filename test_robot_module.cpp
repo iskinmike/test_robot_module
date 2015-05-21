@@ -1,11 +1,20 @@
 #include <stdio.h>
 #include <map>
 #include <functional>
+#include <time.h>
 
-#include <windows.h>
+#ifdef _WIN32
+	#include <windows.h>
+#else
+	#include <stdlib.h>
+	#include <stdint.h>
+	#include <unistd.h>
+	#include <cstdarg>
+	#include <cstddef>
+#endif	
 
-#include "../module_headers/module.h"
-#include "../module_headers/robot_module.h"
+#include "module.h"
+#include "robot_module.h"
 
 #include "test_robot_module.h"
 
@@ -81,6 +90,7 @@ int TestRobotModule::init() {
 		TestRobot *test_robot = new TestRobot(this);
 		aviable_connections[i] = test_robot;
 	}
+	srand(time(NULL));
 	return 0;
 }
 
@@ -153,27 +163,28 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 	FunctionResult *fr = NULL;
 
 	switch (command_index) {
-		case 1: {
+		case 1: { // none
 			break;
 		}
-		case 2: {
+		case 2: { // do_something
 			variable_value *vv = (variable_value*) args[0];
+#ifdef _WIN32
 			Sleep((DWORD) *vv);
+#else
+			usleep(((uint32_t) *vv)*1000);
+#endif			
 			break;
 		}
-		case 3: {
+		case 3: { // get_some_value
 			variable_value *vv = (variable_value*) args[0];
-			if (*vv) {
-				Sleep((DWORD) *vv);
-			}
-			fr = new FunctionResult(1, rand());
+			fr = new FunctionResult(1, rand()%((int) *vv) );
 			break;
 		}
-		case 4: {
+		case 4: { // throw_exception
 			fr = new FunctionResult(0);
 			break;
 		}
-		case 5: {
+		case 5: { // print
 			puts((const char *) args[0]);
 			break;
 		}
@@ -194,6 +205,6 @@ void TestRobot::axisControl(system_value axis_index, variable_value value) {
 	parent->colorPrintf(ConsoleColor(ConsoleColor::green), "change axis value: %s = %d\n", name, value);
 }
 
-__declspec(dllexport) RobotModule* getRobotModuleObject() {
+PREFIX_FUNC_DLL RobotModule* getRobotModuleObject() {
 	return new TestRobotModule();
 }
