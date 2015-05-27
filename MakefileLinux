@@ -39,6 +39,6 @@ test_robot_module.o:  test_robot_module.cpp
 module: test_robot_module.o
 	@echo "-------------------------" 
 	mkdir -p ${OBJECTDIR}
-	${LINK.cc} -shared -o ${OBJECTDIR}/test_module_$(FILENAME_FIX).so ${OBJECTDIR}/test_robot_module.o
+	${LINK.cc} -shared -m32 -o ${OBJECTDIR}/test_module_$(FILENAME_FIX).so ${OBJECTDIR}/test_robot_module.o
 
 
