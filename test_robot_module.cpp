@@ -129,7 +129,7 @@ void TestRobotModule::final() {
 	aviable_connections.clear();
 }
 
-int TestRobotModule::startProgram(int uniq_index, void *buffer, unsigned int buffer_length) {
+int TestRobotModule::startProgram(int uniq_index) {
 	return 0;
 }
 
