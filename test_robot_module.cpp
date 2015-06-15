@@ -202,7 +202,7 @@ void TestRobot::axisControl(system_value axis_index, variable_value value) {
 		case 3: { name = "Z"; break; }
 		default: { name = "O_o"; break; };
 	}
-	parent->colorPrintf(ConsoleColor(ConsoleColor::green), "change axis value: %s = %d\n", name, value);
+	parent->colorPrintf(ConsoleColor(ConsoleColor::green), "change axis value: %s = %d\n", name, (int) value);
 }
 
 PREFIX_FUNC_DLL RobotModule* getRobotModuleObject() {
