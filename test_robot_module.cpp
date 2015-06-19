@@ -63,7 +63,7 @@ TestRobotModule::TestRobotModule() {
 }
 
 const char *TestRobotModule::getUID() {
-	return "Test robot module v1.01";
+	return "Test_robot_module_v107";
 }
 
 void TestRobotModule::prepare(colorPrintf_t *colorPrintf_p, colorPrintfVA_t *colorPrintfVA_p) {
