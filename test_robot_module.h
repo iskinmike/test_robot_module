@@ -8,7 +8,7 @@ class TestRobot : public Robot {
 
     public: 
 		bool isAviable;
-		TestRobot(TestRobotModule *parent) : isAviable(true), parent(parent) {}
+		TestRobot(TestRobotModule *parent) : parent(parent), isAviable(true) {}
 		FunctionResult* executeFunction(system_value command_index, void **args);
 		void axisControl(system_value axis_index, variable_value value);
         ~TestRobot() {}
