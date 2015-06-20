@@ -95,11 +95,11 @@ int TestRobotModule::init() {
 }
 
 Robot* TestRobotModule::robotRequire() {
-	colorPrintf(ConsoleColor(), "new robot require\n");
+	//colorPrintf(ConsoleColor(), "new robot require\n");
 
 	for (m_connections::iterator i = aviable_connections.begin(); i != aviable_connections.end(); ++i) {
 		if (i->second->isAviable) {
-			colorPrintf(ConsoleColor(ConsoleColor::green), "finded free robot\n");
+			//colorPrintf(ConsoleColor(ConsoleColor::green), "finded free robot\n");
 
 			TestRobot *tr = i->second;
 			tr->isAviable = false;
@@ -115,7 +115,7 @@ void TestRobotModule::robotFree(Robot *robot) {
 
 	for (m_connections::iterator i = aviable_connections.begin(); i != aviable_connections.end(); ++i) {
 		if (i->second == test_robot) {
-			colorPrintf(ConsoleColor(), "free robot\n");
+			//colorPrintf(ConsoleColor(), "free robot\n");
 			test_robot->isAviable = true;
 			return;
 		}
