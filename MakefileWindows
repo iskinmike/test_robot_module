@@ -2,6 +2,8 @@
 CC=g++
 CCC=g++
 CXX=g++
+RM = "C:\msys\1.0\bin\rm.exe"
+MKDIR = "C:\msys\1.0\bin\mkdir.exe"
 
 # Constants
 MODULE_HEADERS_DIR = "C:\Program Files (x86)\Jenkins\workspace\module_headers"
@@ -26,17 +28,17 @@ release: clean module
 
 clean:
 	@echo "-------------------------" 
-	rm -rf ${OBJECTDIR}
+	${RM} -rf ${OBJECTDIR}
 
 
 test_robot_module.o:  test_robot_module.cpp
 	@echo "-------------------------" 
-	mkdir -p ${OBJECTDIR}
-	rm -f "${OBJECTDIR}/$@.d"
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} -f "${OBJECTDIR}/$@.d"
 	$(COMPILE.cc) $(FLAGS) -o ${OBJECTDIR}/test_robot_module.o test_robot_module.cpp
 
 
 module: test_robot_module.o
 	@echo "-------------------------" 
-	mkdir -p ${OBJECTDIR}
+	${MKDIR} -p ${OBJECTDIR}
 	${LINK.cc} -shared -m32 -o ${OBJECTDIR}/test_module_$(FILENAME_FIX).dll ${OBJECTDIR}/test_robot_module.o
