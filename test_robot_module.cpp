@@ -177,7 +177,8 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 		}
 		case 3: { // get_some_value
 			variable_value *vv = (variable_value*) args[0];
-			fr = new FunctionResult(1, rand()%((int) *vv) );
+			variable_value res = (rand() % ((int)*vv)) + 1;
+			fr = new FunctionResult(1,  res);
 			break;
 		}
 		case 4: { // throw_exception
