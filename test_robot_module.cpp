@@ -1,12 +1,10 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <map>
-#include <functional>
-#include <time.h>
 
 #ifdef _WIN32
 	#include <windows.h>
 #else
-	#include <stdlib.h>
 	#include <stdint.h>
 	#include <unistd.h>
 	#include <cstdarg>
@@ -90,7 +88,6 @@ int TestRobotModule::init() {
 		TestRobot *test_robot = new TestRobot(this);
 		aviable_connections[i] = test_robot;
 	}
-	srand(time(NULL));
 	return 0;
 }
 
@@ -177,8 +174,7 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 		}
 		case 3: { // get_some_value
 			variable_value *vv = (variable_value*) args[0];
-			variable_value res = (rand() % ((int)*vv)) + 1;
-			fr = new FunctionResult(1,  res);
+			fr = new FunctionResult(1,  *vv);
 			break;
 		}
 		case 4: { // throw_exception
