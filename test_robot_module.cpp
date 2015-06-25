@@ -48,9 +48,10 @@ TestRobotModule::TestRobotModule() {
 		robot_functions[function_id] = new FunctionData(function_id + 1, 0, NULL, "throw_exception");
 		function_id++;
 		
-		pt = new FunctionData::ParamTypes[1];
+		pt = new FunctionData::ParamTypes[2];
 		pt[0] = FunctionData::ParamTypes::STRING;
-		robot_functions[function_id] = new FunctionData(function_id + 1, 1, pt, "print");
+		pt[1] = FunctionData::ParamTypes::FLOAT;
+		robot_functions[function_id] = new FunctionData(function_id + 1, 2, pt, "print");
 		function_id++;
 	}
 	{
@@ -182,6 +183,12 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 			break;
 		}
 		case 5: { // print
+			variable_value *vv = (variable_value*)args[1];
+#ifdef _WIN32
+			Sleep((DWORD)*vv);
+#else
+			usleep(((uint32_t)*vv) * 1000);
+#endif			
 			puts((const char *) args[0]);
 			break;
 		}
