@@ -163,9 +163,9 @@ void TestRobotModule::colorPrintf(ConsoleColor colors, const char *mask, ...) {
 	va_end(args);
 }
 
-TestRobot::TestRobot(unsigned int uniq_index) : parent(parent), isAviable(true) {
+TestRobot::TestRobot(unsigned int uniq_index) : isAviable(true) {
 	uniq_name = new char[40];
-	sprintf(uniq_name, "robot-%d", uniq_index);
+	sprintf(uniq_name, "robot-%u", uniq_index);
 }
 
 void TestRobot::prepare(colorPrintfRobot_t *colorPrintf_p, colorPrintfRobotVA_t *colorPrintfVA_p) {

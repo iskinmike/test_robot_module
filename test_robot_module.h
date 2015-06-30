@@ -4,7 +4,6 @@
 class TestRobotModule;
 
 class TestRobot : public Robot {
-	TestRobotModule *parent;
 	char *uniq_name;
 	colorPrintfRobotVA_t *colorPrintf_p;
 
