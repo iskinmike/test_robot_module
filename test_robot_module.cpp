@@ -93,11 +93,15 @@ int TestRobotModule::init() {
 }
 
 Robot* TestRobotModule::robotRequire() {
+#ifdef IS_DEBUG
 	colorPrintf(ConsoleColor(), "new robot require\n");
+#endif
 
 	for (m_connections::iterator i = aviable_connections.begin(); i != aviable_connections.end(); ++i) {
 		if (i->second->isAviable) {
+#ifdef IS_DEBUG
 			colorPrintf(ConsoleColor(ConsoleColor::green), "finded free robot\n");
+#endif
 
 			TestRobot *tr = i->second;
 			tr->isAviable = false;
@@ -113,7 +117,9 @@ void TestRobotModule::robotFree(Robot *robot) {
 
 	for (m_connections::iterator i = aviable_connections.begin(); i != aviable_connections.end(); ++i) {
 		if (i->second == test_robot) {
+#ifdef IS_DEBUG
 			colorPrintf(ConsoleColor(), "free robot\n");
+#endif
 			test_robot->isAviable = true;
 			return;
 		}
@@ -168,8 +174,9 @@ void TestRobot::prepare(colorPrintfRobot_t *colorPrintf_p, colorPrintfRobotVA_t 
 
 FunctionResult* TestRobot::executeFunction(system_value command_index, void **args) {
 	FunctionResult *fr = NULL;
-
+#ifdef IS_DEBUG
 	colorPrintf(ConsoleColor(ConsoleColor::green), "execute function - %d\n", command_index);
+#endif
 
 	switch (command_index) {
 		case 1: { // none
