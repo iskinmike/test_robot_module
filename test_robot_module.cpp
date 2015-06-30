@@ -65,7 +65,7 @@ const char *TestRobotModule::getUID() {
 	return "Test_robot_module_v107";
 }
 
-void TestRobotModule::prepare(colorPrintf_t *colorPrintf_p, colorPrintfVA_t *colorPrintfVA_p) {
+void TestRobotModule::prepare(colorPrintfModule_t *colorPrintf_p, colorPrintfModuleVA_t *colorPrintfVA_p) {
 	this->colorPrintf_p = colorPrintfVA_p;
 }
 
@@ -86,18 +86,18 @@ void *TestRobotModule::writePC(unsigned int *buffer_length) {
 
 int TestRobotModule::init() {
 	for (unsigned int i = 0; i < COUNT_ROBOTS; ++i) {
-		TestRobot *test_robot = new TestRobot(this);
+		TestRobot *test_robot = new TestRobot(i);
 		aviable_connections[i] = test_robot;
 	}
 	return 0;
 }
 
 Robot* TestRobotModule::robotRequire() {
-	//colorPrintf(ConsoleColor(), "new robot require\n");
+	colorPrintf(ConsoleColor(), "new robot require\n");
 
 	for (m_connections::iterator i = aviable_connections.begin(); i != aviable_connections.end(); ++i) {
 		if (i->second->isAviable) {
-			//colorPrintf(ConsoleColor(ConsoleColor::green), "finded free robot\n");
+			colorPrintf(ConsoleColor(ConsoleColor::green), "finded free robot\n");
 
 			TestRobot *tr = i->second;
 			tr->isAviable = false;
@@ -113,7 +113,7 @@ void TestRobotModule::robotFree(Robot *robot) {
 
 	for (m_connections::iterator i = aviable_connections.begin(); i != aviable_connections.end(); ++i) {
 		if (i->second == test_robot) {
-			//colorPrintf(ConsoleColor(), "free robot\n");
+			colorPrintf(ConsoleColor(), "free robot\n");
 			test_robot->isAviable = true;
 			return;
 		}
@@ -157,8 +157,19 @@ void TestRobotModule::colorPrintf(ConsoleColor colors, const char *mask, ...) {
 	va_end(args);
 }
 
+TestRobot::TestRobot(unsigned int uniq_index) : parent(parent), isAviable(true) {
+	uniq_name = new char[40];
+	sprintf(uniq_name, "robot-%d", uniq_index);
+}
+
+void TestRobot::prepare(colorPrintfRobot_t *colorPrintf_p, colorPrintfRobotVA_t *colorPrintfVA_p) {
+	this->colorPrintf_p = colorPrintfVA_p;
+}
+
 FunctionResult* TestRobot::executeFunction(system_value command_index, void **args) {
 	FunctionResult *fr = NULL;
+
+	colorPrintf(ConsoleColor(ConsoleColor::green), "execute function - %d\n", command_index);
 
 	switch (command_index) {
 		case 1: { // none
@@ -206,7 +217,18 @@ void TestRobot::axisControl(system_value axis_index, variable_value value) {
 		case 3: { name = "Z"; break; }
 		default: { name = "O_o"; break; };
 	}
-	parent->colorPrintf(ConsoleColor(ConsoleColor::green), "change axis value: %s = %f\n", name, value);
+	colorPrintf(ConsoleColor(ConsoleColor::green), "change axis value: %s = %f\n", name, value);
+}
+
+TestRobot::~TestRobot() {
+	delete uniq_name;
+}
+
+void TestRobot::colorPrintf(ConsoleColor colors, const char *mask, ...) {
+	va_list args;
+	va_start(args, mask);
+	(*colorPrintf_p)(this, uniq_name, colors, mask, args);
+	va_end(args);
 }
 
 PREFIX_FUNC_DLL RobotModule* getRobotModuleObject() {
