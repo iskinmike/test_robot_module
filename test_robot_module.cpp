@@ -228,7 +228,7 @@ void TestRobot::axisControl(system_value axis_index, variable_value value) {
 }
 
 TestRobot::~TestRobot() {
-	delete uniq_name;
+	delete[] uniq_name;
 }
 
 void TestRobot::colorPrintf(ConsoleColor colors, const char *mask, ...) {
