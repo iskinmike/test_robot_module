@@ -172,7 +172,7 @@ void TestRobot::prepare(colorPrintfRobot_t *colorPrintf_p, colorPrintfRobotVA_t 
 	this->colorPrintf_p = colorPrintfVA_p;
 }
 
-FunctionResult* TestRobot::executeFunction(system_value command_index, void **args) {
+FunctionResult* TestRobot::executeFunction(CommandMode mode, system_value command_index, void **args) {
 	FunctionResult *fr = NULL;
 #ifdef IS_DEBUG
 	colorPrintf(ConsoleColor(ConsoleColor::green), "execute function - %d\n", command_index);
@@ -207,7 +207,8 @@ FunctionResult* TestRobot::executeFunction(system_value command_index, void **ar
 #else
 			usleep(((uint32_t)*vv) * 1000);
 #endif			
-			puts((const char *) args[0]);
+			const char *tmp = (const char *)args[0];
+			puts(tmp);
 			break;
 		}
 		default: break;
