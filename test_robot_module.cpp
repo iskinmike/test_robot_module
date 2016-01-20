@@ -18,7 +18,7 @@
 
 /* GLOBALS CONFIG */
 
-#define UID "Test_robot_module_v107"
+#define IID "RCT.Test_robot_module_v107"
 
 const unsigned int COUNT_ROBOTS = 99;
 const unsigned int COUNT_FUNCTIONS = 6;
@@ -35,7 +35,7 @@ const unsigned int COUNT_AXIS = 3;
 TestRobotModule::TestRobotModule() {
 #ifndef ROBOT_MODULE_H_000
   mi = new ModuleInfo;
-  mi->uid = UID;
+  mi->uid = IID;
   mi->mode = ModuleInfo::Modes::PROD;
   mi->version = BUILD_NUMBER;
   mi->digest = NULL;
@@ -89,7 +89,7 @@ TestRobotModule::TestRobotModule() {
 }
 
 #ifdef ROBOT_MODULE_H_000
-const char *TestRobotModule::getUID() { return UID; }
+const char *TestRobotModule::getUID() { return IID; }
 #else
 const struct ModuleInfo &TestRobotModule::getModuleInfo() { return *mi; }
 #endif
