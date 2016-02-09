@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <map>
+#include <vector>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -33,7 +33,7 @@ const unsigned int COUNT_AXIS = 3;
   ++axis_id;
 
 TestRobotModule::TestRobotModule() {
-#ifndef ROBOT_MODULE_H_000
+#if ROBOT_MODULE_API_VERSION > 000
   mi = new ModuleInfo;
   mi->uid = IID;
   mi->mode = ModuleInfo::Modes::PROD;
@@ -88,10 +88,10 @@ TestRobotModule::TestRobotModule() {
   }
 }
 
-#ifdef ROBOT_MODULE_H_000
-const char *TestRobotModule::getUID() { return IID; }
-#else
+#if ROBOT_MODULE_API_VERSION > 000
 const struct ModuleInfo &TestRobotModule::getModuleInfo() { return *mi; }
+#else
+const char *TestRobotModule::getUID() { return IID; }
 #endif
 
 void TestRobotModule::prepare(colorPrintfModule_t *colorPrintf_p,
@@ -116,42 +116,60 @@ void *TestRobotModule::writePC(unsigned int *buffer_length) {
 
 int TestRobotModule::init() {
   for (unsigned int i = 0; i < COUNT_ROBOTS; ++i) {
-    TestRobot *test_robot = new TestRobot(i);
-    aviable_connections[i] = test_robot;
+    aviable_connections.push_back(new TestRobot(i));
   }
   return 0;
 }
 
-Robot *TestRobotModule::robotRequire() {
-#ifdef IS_DEBUG
-  colorPrintf(ConsoleColor(), "new robot require\n");
-#endif
-
-  for (m_connections::iterator i = aviable_connections.begin();
+#if ROBOT_MODULE_API_VERSION > 100
+Robot **TestRobotModule::getAviableRobots(unsigned int required_count_robots, unsigned int *returned_count_robots) {
+  std::vector<TestRobot*> aviable_robots;
+  for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
-    if (i->second->isAviable) {
-#ifdef IS_DEBUG
-      colorPrintf(ConsoleColor(ConsoleColor::green), "finded free robot\n");
-#endif
-
-      TestRobot *tr = i->second;
-      tr->isAviable = false;
-
-      return tr;
+    if ((*i)->isAviable) {
+      aviable_robots.push_back(*i);
+    }
+  }
+  (*returned_count_robots) = aviable_robots.size();
+  if (!(*returned_count_robots)) {
+    return NULL;
+  }
+  Robot **res = new Robot*[(*returned_count_robots)];
+  for (auto i = 0; i < (*returned_count_robots); ++i) {
+    res[i] = aviable_robots[0];
+  }
+  return res;
+}
+Robot *TestRobotModule::robotRequire(Robot *robot) {
+  for (auto i = aviable_connections.begin();
+       i != aviable_connections.end(); ++i) {
+    if ((*i)->isAviable) {
+      if ((!robot) || (robot == (*i))) {
+        (*i)->isAviable = false;
+        return (*i);
+      }
     }
   }
   return NULL;
 }
+#else
+Robot *TestRobotModule::robotRequire() {
+  for (auto i = aviable_connections.begin();
+       i != aviable_connections.end(); ++i) {
+    if ((*i)->isAviable) {
+      (*i)->isAviable = false;
+      return (*i);
+    }
+  }
+  return NULL;
+}
+#endif
 
 void TestRobotModule::robotFree(Robot *robot) {
   TestRobot *test_robot = reinterpret_cast<TestRobot *>(robot);
-
-  for (m_connections::iterator i = aviable_connections.begin();
+  for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
-    if (i->second == test_robot) {
-#ifdef IS_DEBUG
-      colorPrintf(ConsoleColor(), "free robot\n");
-#endif
+    if ((*i) == test_robot) {
       test_robot->isAviable = true;
       return;
     }
@@ -159,9 +177,9 @@ void TestRobotModule::robotFree(Robot *robot) {
 }
 
 void TestRobotModule::final() {
-  for (m_connections::iterator i = aviable_connections.begin();
+  for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
-    delete i->second;
+    delete (*i);
   }
   aviable_connections.clear();
 }
@@ -171,7 +189,7 @@ int TestRobotModule::startProgram(int uniq_index) { return 0; }
 int TestRobotModule::endProgram(int uniq_index) { return 0; }
 
 void TestRobotModule::destroy() {
-#ifndef ROBOT_MODULE_H_000
+#if ROBOT_MODULE_API_VERSION > 000
   delete mi;
 #endif
 
@@ -206,14 +224,16 @@ void TestRobot::prepare(colorPrintfRobot_t *colorPrintf_p,
   this->colorPrintf_p = colorPrintfVA_p;
 }
 
+#if ROBOT_MODULE_API_VERSION > 100
+const char *TestRobot::getUniqName() {
+  return uniq_name;
+}
+#endif
+
 FunctionResult *TestRobot::executeFunction(CommandMode mode,
                                            system_value command_index,
                                            void **args) {
   FunctionResult *fr = NULL;
-#ifdef IS_DEBUG
-  colorPrintf(ConsoleColor(ConsoleColor::green), "execute function - %d\n",
-              command_index);
-#endif
 
   switch (command_index) {
     case 1: {  // none
@@ -230,18 +250,18 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
     }
     case 3: {  // get_some_value
       variable_value *vv = (variable_value *)args[0];
-#ifdef ROBOT_MODULE_H_000
-      fr = new FunctionResult(1, *vv);
-#else
+#if ROBOT_MODULE_API_VERSION > 000
       fr = new FunctionResult(FunctionResult::Types::VALUE, *vv);
+#else
+      fr = new FunctionResult(1, *vv);
 #endif
       break;
     }
     case 4: {  // throw_exception
-#ifdef ROBOT_MODULE_H_000
-      fr = new FunctionResult(0);
-#else
+#if ROBOT_MODULE_API_VERSION > 000
       fr = new FunctionResult(FunctionResult::Types::EXCEPTION);
+#else
+      fr = new FunctionResult(0);
 #endif
 
       break;
@@ -259,10 +279,10 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
     }
     case 6:{ // throw_value
             variable_value *vv = (variable_value *)args[0];
-#ifdef ROBOT_MODULE_H_000
-      fr = new FunctionResult(0, *vv);
-#else
+#if ROBOT_MODULE_API_VERSION > 000
       fr = new FunctionResult(FunctionResult::Types::EXCEPTION, *vv);
+#else
+      fr = new FunctionResult(0, *vv);
 #endif
     }
     default:
@@ -305,7 +325,7 @@ void TestRobot::colorPrintf(ConsoleColor colors, const char *mask, ...) {
   va_end(args);
 }
 
-#ifndef ROBOT_MODULE_H_000
+#if ROBOT_MODULE_API_VERSION > 000
 PREFIX_FUNC_DLL unsigned short getRobotModuleApiVersion() {
   return ROBOT_MODULE_API_VERSION;
 };
