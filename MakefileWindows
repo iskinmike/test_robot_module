@@ -10,6 +10,7 @@ BUILD_NUMBER = 0
 # Constants
 .PHONY: debug
 debug_000 release_000: MODULE_HEADERS_DIR = "C:\robot_project\source\module_headers\000"
+debug_100 release_100: MODULE_HEADERS_DIR = "C:\robot_project\source\module_headers\100"
 debug release: MODULE_HEADERS_DIR = "C:\robot_project\source\module_headers\current"
 
 INCLUDE_DIR_FLAGS = -I${MODULE_HEADERS_DIR}
@@ -17,14 +18,16 @@ FLAGS_MUTUAL = -Wall -m32 -std=c++11 ${INCLUDE_DIR_FLAGS} -MMD -MP -MF "${OBJECT
 
 debug: OBJECTDIR = build/Debug
 debug_000: OBJECTDIR = build/Debug_000
+debug_100: OBJECTDIR = build/Debug_100
 
 release: OBJECTDIR = build/Release
 release_000: OBJECTDIR = build/Release_000
+release_100: OBJECTDIR = build/Release_100
 
-debug debug_000: FLAGS = -g ${FLAGS_MUTUAL}
-release release_000: FLAGS = -O3 ${FLAGS_MUTUAL}
+debug debug_000 debug_100: FLAGS = -g ${FLAGS_MUTUAL}
+release release_000 release_100: FLAGS = -O3 ${FLAGS_MUTUAL}
 
-debug debug_000 release release_000: clean module
+debug debug_000 debug_100 release release_000 release_100: clean module
 
 clean:
 	@echo "-------------------------" 

@@ -13,7 +13,6 @@
 
 #include "module.h"
 #include "robot_module.h"
-
 #include "test_robot_module.h"
 
 /* GLOBALS CONFIG */
@@ -21,7 +20,7 @@
 #define IID "RCT.Test_robot_module_v107"
 
 const unsigned int COUNT_ROBOTS = 99;
-const unsigned int COUNT_FUNCTIONS = 6;
+const unsigned int COUNT_FUNCTIONS = 7;
 const unsigned int COUNT_AXIS = 3;
 
 #define ADD_ROBOT_AXIS(AXIS_NAME, UPPER_VALUE, LOWER_VALUE) \
@@ -77,6 +76,13 @@ TestRobotModule::TestRobotModule() {
     pt[0] = FunctionData::ParamTypes::FLOAT;
     robot_functions[function_id] =
         new FunctionData(function_id + 1, 1, pt, "throw_value");
+    function_id++;
+
+    pt = new FunctionData::ParamTypes[1];
+    pt[0] = FunctionData::ParamTypes::STRING;
+    robot_functions[function_id] =
+        new FunctionData(function_id + 1, 1, pt, "debug");
+    function_id++;
 
   }
   {
@@ -116,13 +122,13 @@ void *TestRobotModule::writePC(unsigned int *buffer_length) {
 
 int TestRobotModule::init() {
   for (unsigned int i = 0; i < COUNT_ROBOTS; ++i) {
-    aviable_connections.push_back(new TestRobot(i));
+    aviable_connections.push_back(new TestRobot(i + ));
   }
   return 0;
 }
 
 #if ROBOT_MODULE_API_VERSION > 100
-Robot **TestRobotModule::getAviableRobots(unsigned int required_count_robots, unsigned int *returned_count_robots) {
+AviableRobotsReult *TestRobotModule::getAviableRobots() {
   std::vector<TestRobot*> aviable_robots;
   for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
@@ -130,15 +136,17 @@ Robot **TestRobotModule::getAviableRobots(unsigned int required_count_robots, un
       aviable_robots.push_back(*i);
     }
   }
-  (*returned_count_robots) = aviable_robots.size();
-  if (!(*returned_count_robots)) {
+
+  unsigned int count_robots = aviable_robots.size();
+  if (!count_robots) {
     return NULL;
   }
-  Robot **res = new Robot*[(*returned_count_robots)];
-  for (auto i = 0; i < (*returned_count_robots); ++i) {
-    res[i] = aviable_robots[0];
+  Robot **robots = new Robot*[count_robots];
+  for (unsigned int i = 0; i < count_robots; ++i) {
+    robots[i] = aviable_robots[i];
   }
-  return res;
+
+  return new AviableRobotsReult(robots, count_robots);
 }
 Robot *TestRobotModule::robotRequire(Robot *robot) {
   for (auto i = aviable_connections.begin();
@@ -285,6 +293,11 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
       fr = new FunctionResult(0, *vv);
 #endif
     }
+    case 7: {  // debug
+      const char *tmp = (const char *)args[0];
+      colorPrintf(ConsoleColor(ConsoleColor::white), "%s", tmp);
+      break;
+    }
     default:
       break;
   }
@@ -321,7 +334,11 @@ TestRobot::~TestRobot() { delete[] uniq_name; }
 void TestRobot::colorPrintf(ConsoleColor colors, const char *mask, ...) {
   va_list args;
   va_start(args, mask);
+#if ROBOT_MODULE_API_VERSION > 100
+  (*colorPrintf_p)(this, colors, mask, args);
+#else
   (*colorPrintf_p)(this, uniq_name, colors, mask, args);
+#endif
   va_end(args);
 }
 

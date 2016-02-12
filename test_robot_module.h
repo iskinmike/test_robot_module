@@ -56,7 +56,7 @@ class TestRobotModule : public RobotModule {
 
   int startProgram(int uniq_index);
 #if ROBOT_MODULE_API_VERSION > 100
-  Robot **getAviableRobots(unsigned int required_count_robots, unsigned int *returned_count_robots);
+  AviableRobotsReult *getAviableRobots();
   Robot *robotRequire(Robot *robot);
 #else
   Robot *robotRequire();
