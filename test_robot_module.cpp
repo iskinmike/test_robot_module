@@ -32,7 +32,7 @@ const unsigned int COUNT_AXIS = 3;
   ++axis_id;
 
 TestRobotModule::TestRobotModule() {
-#if ROBOT_MODULE_API_VERSION > 000
+#if MODULE_API_VERSION > 000
   mi = new ModuleInfo;
   mi->uid = IID;
   mi->mode = ModuleInfo::Modes::PROD;
@@ -94,7 +94,7 @@ TestRobotModule::TestRobotModule() {
   }
 }
 
-#if ROBOT_MODULE_API_VERSION > 000
+#if MODULE_API_VERSION > 000
 const struct ModuleInfo &TestRobotModule::getModuleInfo() { return *mi; }
 #else
 const char *TestRobotModule::getUID() { return IID; }
@@ -122,12 +122,12 @@ void *TestRobotModule::writePC(unsigned int *buffer_length) {
 
 int TestRobotModule::init() {
   for (unsigned int i = 0; i < COUNT_ROBOTS; ++i) {
-    aviable_connections.push_back(new TestRobot(i + ));
+    aviable_connections.push_back(new TestRobot(i + 1));
   }
   return 0;
 }
 
-#if ROBOT_MODULE_API_VERSION > 100
+#if MODULE_API_VERSION > 100
 AviableRobotsReult *TestRobotModule::getAviableRobots() {
   std::vector<TestRobot*> aviable_robots;
   for (auto i = aviable_connections.begin();
@@ -197,7 +197,7 @@ int TestRobotModule::startProgram(int uniq_index) { return 0; }
 int TestRobotModule::endProgram(int uniq_index) { return 0; }
 
 void TestRobotModule::destroy() {
-#if ROBOT_MODULE_API_VERSION > 000
+#if MODULE_API_VERSION > 000
   delete mi;
 #endif
 
@@ -232,7 +232,7 @@ void TestRobot::prepare(colorPrintfRobot_t *colorPrintf_p,
   this->colorPrintf_p = colorPrintfVA_p;
 }
 
-#if ROBOT_MODULE_API_VERSION > 100
+#if MODULE_API_VERSION > 100
 const char *TestRobot::getUniqName() {
   return uniq_name;
 }
@@ -258,7 +258,7 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
     }
     case 3: {  // get_some_value
       variable_value *vv = (variable_value *)args[0];
-#if ROBOT_MODULE_API_VERSION > 000
+#if MODULE_API_VERSION > 000
       fr = new FunctionResult(FunctionResult::Types::VALUE, *vv);
 #else
       fr = new FunctionResult(1, *vv);
@@ -266,7 +266,7 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
       break;
     }
     case 4: {  // throw_exception
-#if ROBOT_MODULE_API_VERSION > 000
+#if MODULE_API_VERSION > 000
       fr = new FunctionResult(FunctionResult::Types::EXCEPTION);
 #else
       fr = new FunctionResult(0);
@@ -287,7 +287,7 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
     }
     case 6:{ // throw_value
             variable_value *vv = (variable_value *)args[0];
-#if ROBOT_MODULE_API_VERSION > 000
+#if MODULE_API_VERSION > 000
       fr = new FunctionResult(FunctionResult::Types::EXCEPTION, *vv);
 #else
       fr = new FunctionResult(0, *vv);
@@ -334,7 +334,7 @@ TestRobot::~TestRobot() { delete[] uniq_name; }
 void TestRobot::colorPrintf(ConsoleColor colors, const char *mask, ...) {
   va_list args;
   va_start(args, mask);
-#if ROBOT_MODULE_API_VERSION > 100
+#if MODULE_API_VERSION > 100
   (*colorPrintf_p)(this, colors, mask, args);
 #else
   (*colorPrintf_p)(this, uniq_name, colors, mask, args);
@@ -342,9 +342,9 @@ void TestRobot::colorPrintf(ConsoleColor colors, const char *mask, ...) {
   va_end(args);
 }
 
-#if ROBOT_MODULE_API_VERSION > 000
+#if MODULE_API_VERSION > 000
 PREFIX_FUNC_DLL unsigned short getRobotModuleApiVersion() {
-  return ROBOT_MODULE_API_VERSION;
+  return MODULE_API_VERSION;
 };
 #endif
 
