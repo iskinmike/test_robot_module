@@ -282,7 +282,7 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
       usleep(((uint32_t)*vv) * 1000);
 #endif
       const char *tmp = (const char *)args[0];
-      puts(tmp);
+      colorPrintf(ConsoleColor(ConsoleColor::white), "%s", tmp);
       break;
     }
     case 6:{ // throw_value
