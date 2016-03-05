@@ -12,6 +12,9 @@ class TestRobot : public Robot {
   TestRobot(unsigned int uniq_index);
   void prepare(colorPrintfRobot_t *colorPrintf_p,
                colorPrintfRobotVA_t *colorPrintfVA_p);
+#if MODULE_API_VERSION > 100
+  const char *getUniqName();
+#endif
   FunctionResult *executeFunction(CommandMode mode, system_value command_index,
                                   void **args);
   void axisControl(system_value axis_index, variable_value value);
@@ -19,26 +22,26 @@ class TestRobot : public Robot {
 
   void colorPrintf(ConsoleColor colors, const char *mask, ...);
 };
-typedef std::map<int, TestRobot *> m_connections;
 
 class TestRobotModule : public RobotModule {
-  m_connections aviable_connections;
+  std::vector<TestRobot *> aviable_connections;
   FunctionData **robot_functions;
   AxisData **robot_axis;
   colorPrintfModuleVA_t *colorPrintf_p;
 
-#ifndef ROBOT_MODULE_H_000
+#if MODULE_API_VERSION > 000
   ModuleInfo *mi;
 #endif
 
  public:
   TestRobotModule();
 
-#ifdef ROBOT_MODULE_H_000
-  const char *getUID();
-#else
+#if MODULE_API_VERSION > 000
   const struct ModuleInfo &getModuleInfo();
+#else
+  const char *getUID();
 #endif
+
   void prepare(colorPrintfModule_t *colorPrintf_p,
                colorPrintfModuleVA_t *colorPrintfVA_p);
 
@@ -47,13 +50,18 @@ class TestRobotModule : public RobotModule {
   void *writePC(unsigned int *buffer_length);
 
   int init();
-  Robot *robotRequire();
-  void robotFree(Robot *robot);
   void final();
 
   void readPC(void *buffer, unsigned int buffer_length){};
 
   int startProgram(int uniq_index);
+#if MODULE_API_VERSION > 100
+  AviableRobotsReult *getAviableRobots();
+  Robot *robotRequire(Robot *robot);
+#else
+  Robot *robotRequire();
+#endif
+  void robotFree(Robot *robot);
   int endProgram(int uniq_index);
 
   void destroy();
