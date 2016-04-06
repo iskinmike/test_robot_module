@@ -82,7 +82,7 @@ TestRobotModule::TestRobotModule() {
 
 #if MODULE_API_VERSION > 000
   mi = new ModuleInfo;
-  char *IID = new char[string_IID.length() + 1];
+  char IID[string_IID.length() + 1];
   strcpy(IID, string_IID.c_str());
   mi->uid = IID;
   mi->mode = ModuleInfo::Modes::PROD;
