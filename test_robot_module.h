@@ -52,17 +52,18 @@ class TestRobotModule : public RobotModule {
   int init();
   void final();
 
-  void readPC(void *buffer, unsigned int buffer_length){};
-
-  int startProgram(int uniq_index);
 #if MODULE_API_VERSION > 100
-  AviableRobotsReult *getAviableRobots();
+  int readPC(int pc_index, void *buffer, unsigned int buffer_length);
+  int startProgram(int run_index, int pc_index);
+  AviableRobotsResult *getAviableRobots();
   Robot *robotRequire(Robot *robot);
 #else
+  void readPC(void *buffer, unsigned int buffer_length){};
+  int startProgram(int run_index);
   Robot *robotRequire();
 #endif
   void robotFree(Robot *robot);
-  int endProgram(int uniq_index);
+  int endProgram(int run_index);
 
   void destroy();
   ~TestRobotModule(){};

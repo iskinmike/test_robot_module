@@ -128,7 +128,15 @@ int TestRobotModule::init() {
 }
 
 #if MODULE_API_VERSION > 100
-AviableRobotsReult *TestRobotModule::getAviableRobots() {
+int TestRobotModule::readPC(int pc_index, void *buffer, unsigned int buffer_length) {
+  return 0;
+}
+
+int TestRobotModule::startProgram(int run_index, int pc_index) {
+  return 0;
+}
+
+AviableRobotsResult *TestRobotModule::getAviableRobots() {
   std::vector<TestRobot*> aviable_robots;
   for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
@@ -146,7 +154,7 @@ AviableRobotsReult *TestRobotModule::getAviableRobots() {
     robots[i] = aviable_robots[i];
   }
 
-  return new AviableRobotsReult(robots, count_robots);
+  return new AviableRobotsResult(robots, count_robots);
 }
 Robot *TestRobotModule::robotRequire(Robot *robot) {
   for (auto i = aviable_connections.begin();
@@ -161,6 +169,8 @@ Robot *TestRobotModule::robotRequire(Robot *robot) {
   return NULL;
 }
 #else
+int TestRobotModule::startProgram(int run_index) { return 0; }
+
 Robot *TestRobotModule::robotRequire() {
   for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
@@ -192,9 +202,9 @@ void TestRobotModule::final() {
   aviable_connections.clear();
 }
 
-int TestRobotModule::startProgram(int uniq_index) { return 0; }
 
-int TestRobotModule::endProgram(int uniq_index) { return 0; }
+
+int TestRobotModule::endProgram(int run_index) { return 0; }
 
 void TestRobotModule::destroy() {
 #if MODULE_API_VERSION > 000
