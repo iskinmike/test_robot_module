@@ -14,9 +14,12 @@ class TestRobot : public Robot {
                colorPrintfRobotVA_t *colorPrintfVA_p);
 #if MODULE_API_VERSION > 100
   const char *getUniqName();
-#endif
+  FunctionResult *executeFunction(int run_index, CommandMode mode, system_value command_index,
+                                  void **args);
+#else
   FunctionResult *executeFunction(CommandMode mode, system_value command_index,
                                   void **args);
+#endif                                  
   void axisControl(system_value axis_index, variable_value value);
   ~TestRobot();
 
@@ -55,8 +58,8 @@ class TestRobotModule : public RobotModule {
 #if MODULE_API_VERSION > 100
   int readPC(int pc_index, void *buffer, unsigned int buffer_length);
   int startProgram(int run_index, int pc_index);
-  AviableRobotsResult *getAviableRobots();
-  Robot *robotRequire(Robot *robot);
+  AviableRobotsResult *getAviableRobots(int run_index);
+  Robot *robotRequire(int run_index, Robot *robot);
 #else
   void readPC(void *buffer, unsigned int buffer_length){};
   int startProgram(int run_index);

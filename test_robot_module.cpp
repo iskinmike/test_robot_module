@@ -136,7 +136,7 @@ int TestRobotModule::startProgram(int run_index, int pc_index) {
   return 0;
 }
 
-AviableRobotsResult *TestRobotModule::getAviableRobots() {
+AviableRobotsResult *TestRobotModule::getAviableRobots(int run_index) {
   std::vector<TestRobot*> aviable_robots;
   for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
@@ -156,7 +156,7 @@ AviableRobotsResult *TestRobotModule::getAviableRobots() {
 
   return new AviableRobotsResult(robots, count_robots);
 }
-Robot *TestRobotModule::robotRequire(Robot *robot) {
+Robot *TestRobotModule::robotRequire(int run_index, Robot *robot) {
   for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
     if ((*i)->isAviable) {
@@ -246,11 +246,16 @@ void TestRobot::prepare(colorPrintfRobot_t *colorPrintf_p,
 const char *TestRobot::getUniqName() {
   return uniq_name;
 }
-#endif
 
+FunctionResult *TestRobot::executeFunction(int run_index, CommandMode mode,
+                                           system_value command_index,
+                                           void **args) {
+#else
 FunctionResult *TestRobot::executeFunction(CommandMode mode,
                                            system_value command_index,
                                            void **args) {
+#endif
+
   FunctionResult *fr = NULL;
 
   switch (command_index) {
