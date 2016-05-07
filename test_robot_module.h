@@ -60,12 +60,14 @@ class TestRobotModule : public RobotModule {
   int startProgram(int run_index, int pc_index);
   AviableRobotsResult *getAviableRobots(int run_index);
   Robot *robotRequire(int run_index, Robot *robot);
+  void robotFree(int run_index, Robot *robot);
 #else
   void readPC(void *buffer, unsigned int buffer_length){};
   int startProgram(int run_index);
   Robot *robotRequire();
-#endif
   void robotFree(Robot *robot);
+#endif
+  
   int endProgram(int run_index);
 
   void destroy();

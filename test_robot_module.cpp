@@ -183,7 +183,11 @@ Robot *TestRobotModule::robotRequire() {
 }
 #endif
 
+#if MODULE_API_VERSION > 100
+void TestRobotModule::robotFree(int run_index, Robot *robot) {
+#else
 void TestRobotModule::robotFree(Robot *robot) {
+#endif
   TestRobot *test_robot = reinterpret_cast<TestRobot *>(robot);
   for (auto i = aviable_connections.begin();
        i != aviable_connections.end(); ++i) {
