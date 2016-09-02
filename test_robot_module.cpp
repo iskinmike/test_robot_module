@@ -25,8 +25,8 @@
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #endif
 
-const unsigned int COUNT_ROBOTS = 99;
-const unsigned int COUNT_FUNCTIONS = 7;
+const unsigned int COUNT_ROBOTS = 3;
+const unsigned int COUNT_FUNCTIONS = 8;
 const unsigned int COUNT_AXIS = 3;
 
 #define ADD_ROBOT_AXIS(AXIS_NAME, UPPER_VALUE, LOWER_VALUE) \
@@ -37,7 +37,11 @@ const unsigned int COUNT_AXIS = 3;
   robot_axis[axis_id]->name = AXIS_NAME;                    \
   ++axis_id;
 
-TestRobotModule::TestRobotModule() {
+
+const char *myiid;
+
+TestRobotModule::TestRobotModule() : IID("RCT.Test_robot_module_v107_1") {
+  myiid = IID.c_str();
   std::string ConfigPath = "";
 #ifdef _WIN32
   WCHAR DllPath[MAX_PATH] = {0};
@@ -71,20 +75,17 @@ TestRobotModule::TestRobotModule() {
   CSimpleIniA ini;
   ini.SetMultiKey(true);
 
-  std::string string_IID("RCT.Test_robot_module_v107");
   if (ini.LoadFile(ConfigPath.c_str()) >= 0)  // without config
   {
     std::string temp_iid(ini.GetValue("options", "IID", ""));
     if (!temp_iid.empty()){
-      string_IID.assign(temp_iid);
+      IID.assign(temp_iid);
     }
   }
 
 #if MODULE_API_VERSION > 000
   mi = new ModuleInfo;
-  char IID[string_IID.length() + 1];
-  strcpy(IID, string_IID.c_str());
-  mi->uid = IID;
+  mi->uid = IID.c_str();
   mi->mode = ModuleInfo::Modes::PROD;
   mi->version = BUILD_NUMBER;
   mi->digest = NULL;
@@ -134,6 +135,10 @@ TestRobotModule::TestRobotModule() {
         new FunctionData(function_id + 1, 1, pt, "debug");
     function_id++;
 
+    robot_functions[function_id] =
+        new FunctionData(function_id + 1, 0, NULL, "get_iid");
+    function_id++;
+
   }
   {
     robot_axis = new AxisData *[COUNT_AXIS];
@@ -147,7 +152,7 @@ TestRobotModule::TestRobotModule() {
 #if MODULE_API_VERSION > 000
 const struct ModuleInfo &TestRobotModule::getModuleInfo() { return *mi; }
 #else
-const char *TestRobotModule::getUID() { return IID; }
+const char *TestRobotModule::getUID() { return IID.c_str(); }
 #endif
 
 void TestRobotModule::prepare(colorPrintfModule_t *colorPrintf_p,
@@ -256,11 +261,10 @@ void TestRobotModule::final() {
   aviable_connections.clear();
 }
 
-
-
 int TestRobotModule::endProgram(int run_index) { return 0; }
 
 void TestRobotModule::destroy() {
+  colorPrintf(ConsoleColor(ConsoleColor::aqua), "destroy() method called\n");
 #if MODULE_API_VERSION > 000
   delete mi;
 #endif
@@ -365,6 +369,10 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
     case 7: {  // debug
       const char *tmp = (const char *)args[0];
       colorPrintf(ConsoleColor(ConsoleColor::white), "%s", tmp);
+      break;
+    }
+    case 8: {  // get_iid
+      colorPrintf(ConsoleColor(ConsoleColor::white), "my IID: %s", myiid);
       break;
     }
     default:
