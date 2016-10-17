@@ -19,14 +19,12 @@
 
 /* GLOBALS CONFIG */
 
-//#define IID "RCT.Test_robot_module_v107"
-
 #ifdef _WIN32
 EXTERN_C IMAGE_DOS_HEADER __ImageBase;
 #endif
 
-const unsigned int COUNT_ROBOTS = 3;
-const unsigned int COUNT_FUNCTIONS = 8;
+const unsigned int COUNT_ROBOTS = 99;
+const unsigned int COUNT_FUNCTIONS = 7;
 const unsigned int COUNT_AXIS = 3;
 
 #define ADD_ROBOT_AXIS(AXIS_NAME, UPPER_VALUE, LOWER_VALUE) \
@@ -37,10 +35,9 @@ const unsigned int COUNT_AXIS = 3;
   robot_axis[axis_id]->name = AXIS_NAME;                    \
   ++axis_id;
 
-
 const char *myiid;
 
-TestRobotModule::TestRobotModule() : IID("RCT.Test_robot_module_v107_1") {
+TestRobotModule::TestRobotModule() : IID("RCT.Test_robot_module_v107") {
   myiid = IID.c_str();
   std::string ConfigPath = "";
 #ifdef _WIN32
@@ -369,10 +366,6 @@ FunctionResult *TestRobot::executeFunction(CommandMode mode,
     case 7: {  // debug
       const char *tmp = (const char *)args[0];
       colorPrintf(ConsoleColor(ConsoleColor::white), "%s", tmp);
-      break;
-    }
-    case 8: {  // get_iid
-      colorPrintf(ConsoleColor(ConsoleColor::white), "my IID: %s", myiid);
       break;
     }
     default:
