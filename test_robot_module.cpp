@@ -35,10 +35,7 @@ const unsigned int COUNT_AXIS = 3;
   robot_axis[axis_id]->name = AXIS_NAME;                    \
   ++axis_id;
 
-const char *myiid;
-
 TestRobotModule::TestRobotModule() : IID("RCT.Test_robot_module_v107") {
-  myiid = IID.c_str();
   std::string ConfigPath = "";
 #ifdef _WIN32
   WCHAR DllPath[MAX_PATH] = {0};
@@ -256,7 +253,6 @@ void TestRobotModule::final() {
 int TestRobotModule::endProgram(int run_index) { return 0; }
 
 void TestRobotModule::destroy() {
-  colorPrintf(ConsoleColor(ConsoleColor::aqua), "destroy() method called\n");
 #if MODULE_API_VERSION > 000
   delete mi;
 #endif
