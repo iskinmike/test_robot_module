@@ -131,11 +131,6 @@ TestRobotModule::TestRobotModule() : IID("RCT.Test_robot_module_v107") {
     robot_functions[function_id] =
         new FunctionData(function_id + 1, 1, pt, "debug");
     function_id++;
-
-    robot_functions[function_id] =
-        new FunctionData(function_id + 1, 0, NULL, "get_iid");
-    function_id++;
-
   }
   {
     robot_axis = new AxisData *[COUNT_AXIS];
