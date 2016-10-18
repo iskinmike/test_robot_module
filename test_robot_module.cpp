@@ -79,7 +79,7 @@ TestRobotModule::TestRobotModule() : IID("RCT.Test_robot_module_v107") {
 
 #if MODULE_API_VERSION > 000
   mi = new ModuleInfo;
-  mi->uid = IID.c_str();
+  mi->uid = const_cast<char*>(IID.c_str());
   mi->mode = ModuleInfo::Modes::PROD;
   mi->version = BUILD_NUMBER;
   mi->digest = NULL;
